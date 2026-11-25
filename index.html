@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORBON - Gestión Centralizada</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #F0C808;
+            --primary-hover: #D4B007;
+            --black: #111111;
+            --white: #FFFFFF;
+            --gray-light: #F4F4F4;
+            --gray-dark: #333333;
+            --border: #E0E0E0;
+            --ok: #1E7E34;
+            --err: #C82333;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--gray-light);
+            color: var(--black);
+        }
+        header {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 5px solid var(--primary);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .logo {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1.8rem;
+            margin: 0;
+            padding: 0;
+            flex-wrap: wrap;
+        }
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+        nav a:hover {
+            color: var(--primary);
+        }
+        .hero {
+            background-color: var(--white);
+            padding: 4rem 5%;
+            text-align: center;
+            border-bottom: 1px solid #EAEAEA;
+        }
+        .hero h1 {
+            font-size: 2.6rem;
+            margin: 0 0 1rem 0;
+            color: var(--black);
+        }
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--gray-dark);
+            max-width: 780px;
+            margin: 0 auto 2rem auto;
+            line-height: 1.6;
+        }
+        .btn {
+            background-color: var(--primary);
+            color: var(--black);
+            padding: 0.85rem 2rem;
+            font-weight: 800;
+            font-size: 1rem;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.15s, background 0.2s;
+            display: inline-block;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            background-color: var(--primary-hover);
+        }
+        .btn-outline {
+            background-color: transparent;
+            color: var(--black);
+            border: 2px solid var(--black);
+            padding: 0.65rem 1.2rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-outline:hover {
+            background-color: var(--black);
+            color: var(--primary);
+        }
+        .section-title {
+            text-align: center;
+            margin: 3.5rem 0 1.8rem 0;
+            font-size: 2rem;
+        }
+
+        /* --- SECCIÓN DE REGISTRO EN BD --- */
+        .registro-wrapper {
+            padding: 0 5% 3rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .api-bar {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.8rem;
+        }
+        .api-bar label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+        .api-input-group {
+            display: flex;
+            gap: 0.6rem;
+            flex: 1;
+            min-width: 260px;
+        }
+        .api-input-group input {
+            flex: 1;
+            padding: 0.55rem 0.8rem;
+            border-radius: 4px;
+            border: 1px solid #444;
+            background: #1E1E1E;
+            color: var(--white);
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        .status-badge {
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            background: #222;
+            color: #CCC;
+        }
+        .status-ok {
+            background: #143D1F;
+            color: #68D391;
+        }
+        .status-err {
+            background: #4A151B;
+            color: #FEB2B2;
+        }
+
+        .registro-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 2rem;
+        }
+        @media (max-width: 900px) {
+            .registro-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .form-card, .panel-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+            border-top: 4px solid var(--primary);
+        }
+        .panel-card {
+            border-top-color: var(--black);
+        }
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--gray-light);
+            padding-bottom: 0.8rem;
+        }
+        .tab-btn {
+            padding: 0.55rem 1.1rem;
+            border: none;
+            background: var(--gray-light);
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--gray-dark);
+        }
+        .tab-btn.active {
+            background: var(--black);
+            color: var(--primary);
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+        }
+        .form-group input, .form-group select {
+            padding: 0.65rem 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--black);
+        }
+        .form-actions {
+            margin-top: 1.4rem;
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .result-box {
+            margin-top: 1.2rem;
+            padding: 1rem 1.2rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: none;
+            line-height: 1.5;
+        }
+        .result-ok {
+            display: block;
+            background: #EBFBEE;
+            border-left: 4px solid var(--ok);
+            color: #155724;
+        }
+        .result-err {
+            display: block;
+            background: #F8D7DA;
+            border-left: 4px solid var(--err);
+            color: #721C24;
+        }
+        .sql-box {
+            background: var(--black);
+            color: var(--primary);
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.88rem;
+            margin-top: 0.6rem;
+            word-break: break-all;
+        }
+
+        .table-mini {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+        }
+        .table-mini th, .table-mini td {
+            text-align: left;
+            padding: 0.55rem 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .table-mini th {
+            background: var(--gray-light);
+            font-weight: 700;
+        }
+
+        /* --- MÓDULOS Y REPORTES --- */
+        .modules {
+            padding: 0 5% 4rem 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.8rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+            border-top: 4px solid var(--black);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            border-top-color: var(--primary);
+        }
+        .card h3 {
+            font-size: 1.35rem;
+            margin-top: 0;
+            margin-bottom: 0.8rem;
+        }
+        .card p {
+            color: var(--gray-dark);
+            line-height: 1.5;
+            margin-bottom: 1.2rem;
+            font-size: 0.95rem;
+        }
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .tag {
+            background: var(--gray-light);
+            padding: 0.35rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--black);
+        }
+        .db-queries {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 4rem 5%;
+        }
+        .db-queries h2 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 2.5rem;
+            font-size: 2rem;
+        }
+        .query-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.8rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .query-card {
+            background: #1A1A1A;
+            padding: 1.8rem;
+            border-left: 3px solid var(--primary);
+            border-radius: 4px;
+        }
+        .query-card h4 {
+            margin-top: 0;
+            font-size: 1.15rem;
+        }
+        .query-card p {
+            color: #CCCCCC;
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+        .footer {
+            background: var(--black);
+            color: #888888;
+            text-align: center;
+            padding: 2rem 5% 1.5rem 5%;
+            font-size: 0.88rem;
+            border-top: 1px solid #222222;
+        }
+        .footer-contacts {
+            margin-bottom: 0.8rem;
+            color: #999999;
+        }
+        .academic-note {
+            margin-top: 1rem;
+            font-size: 0.72rem;
+            color: #4A4A4A;
+            letter-spacing: 0.2px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">ORBON</div>
+        <nav>
+            <ul>
+                <li><a href="#registro">Registro en BD</a></li>
+                <li><a href="#modulos">Módulos</a></li>
+                <li><a href="#reportes">Reportes</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Sistema Centralizado ORBON</h1>
+        <p>Plataforma comercial y logística para nuestras líneas de aceites industriales <strong>OMNIGOLD</strong>, <strong>HYVOLT</strong> y <strong>HYPRENE</strong>. Conectada en tiempo real a nuestra base de datos relacional en PostgreSQL.</p>
+        <a href="#registro" class="btn">Registrar en Base de Datos</a>
+    </section>
+
+    <!-- ======================================================= -->
+    <!-- SECCIÓN PRINCIPAL: FORMULARIO CONECTADO A LA BD LOCAL   -->
+    <!-- ======================================================= -->
+    <h2 class="section-title" id="registro">Registro en Vivo (Web &rarr; API &rarr; PostgreSQL)</h2>
+
+    <section class="registro-wrapper">
+        <!-- Barra para pegar la URL de ngrok o localhost -->
+        <div class="api-bar">
+            <label for="apiUrl">URL del Backend (API local o ngrok):</label>
+            <div class="api-input-group">
+                <input type="text" id="apiUrl" value="http://127.0.0.1:5000" placeholder="https://xxxx.ngrok-free.app">
+                <button type="button" class="btn" style="padding: 0.55rem 1.1rem; font-size: 0.88rem;" onclick="probarConexion()">Probar conexión</button>
+            </div>
+            <span id="apiStatus" class="status-badge">Sin verificar</span>
+        </div>
+
+        <div class="registro-grid">
+            <!-- Tarjeta del Formulario -->
+            <div class="form-card">
+                <div class="tabs">
+                    <button type="button" class="tab-btn active" id="tabClienteBtn" onclick="cambiarTab('cliente')">Nuevo Cliente</button>
+                    <button type="button" class="tab-btn" id="tabPedidoBtn" onclick="cambiarTab('pedido')">Nuevo Pedido</button>
+                </div>
+
+                <!-- FORMULARIO 1: CLIENTE -->
+                <form id="formCliente" onsubmit="enviarCliente(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Número de Cliente (Clave PK)</label>
+                            <input type="number" id="cliNumero" placeholder="Ej. 901" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Cliente</label>
+                            <select id="cliTipo" onchange="actualizarSubtipoCliente()">
+                                <option value="NACIONAL">NACIONAL</option>
+                                <option value="EXPORTACION">EXPORTACION</option>
+                            </select>
+                        </div>
+                        <div class="form-group full">
+                            <label>Razón Social</label>
+                            <input type="text" id="cliRazon" placeholder="Ej. Lubricantes Industriales del Bajío S.A. de C.V." required>
+                        </div>
+                        <div class="form-group">
+                            <label>Correo Electrónico (Dominio)</label>
+                            <input type="email" id="cliCorreo" placeholder="contacto@empresa.mx" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono (Dominio)</label>
+                            <input type="text" id="cliTelefono" placeholder="+52 55 1234 5678" required>
+                        </div>
+
+                        <!-- Campos exclusivos NACIONAL -->
+                        <div class="form-group campo-nacional">
+                            <label>RFC (12 o 13 caracteres)</label>
+                            <input type="text" id="cliRfc" placeholder="LIB200115AB1">
+                        </div>
+                        <div class="form-group campo-nacional">
+                            <label>Estado de Origen</label>
+                            <input type="text" id="cliEstado" placeholder="Querétaro">
+                        </div>
+                        <div class="form-group full campo-nacional">
+                            <label>Régimen Fiscal</label>
+                            <input type="text" id="cliRegimen" placeholder="General de Ley Personas Morales">
+                        </div>
+
+                        <!-- Campos exclusivos EXPORTACION -->
+                        <div class="form-group campo-exportacion" style="display:none;">
+                            <label>ID Fiscal Global</label>
+                            <input type="text" id="cliIdFiscal" placeholder="US-98451230">
+                        </div>
+                        <div class="form-group campo-exportacion" style="display:none;">
+                            <label>País Receptor</label>
+                            <input type="text" id="cliPais" placeholder="Estados Unidos">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn">Guardar Cliente en BD</button>
+                        <button type="button" class="btn-outline" onclick="llenarEjemploCliente()">Llenar datos de prueba</button>
+                    </div>
+                </form>
+
+                <!-- FORMULARIO 2: PEDIDO -->
+                <form id="formPedido" onsubmit="enviarPedido(event)" style="display:none;">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Folio del Pedido (Clave PK)</label>
+                            <input type="number" id="pedFolio" placeholder="Ej. 1501" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Número de Cliente (FK)</label>
+                            <input type="number" id="pedCliente" placeholder="Ej. 1 o 901" required>
+                        </div>
+                        <div class="form-group full">
+                            <label>Estatus</label>
+                            <select id="pedEstatus">
+                                <option value="REGISTRADO">REGISTRADO</option>
+                                <option value="EN PROCESO">EN PROCESO</option>
+                                <option value="ENVIADO">ENVIADO</option>
+                                <option value="ENTREGADO">ENTREGADO</option>
+                                <option value="CANCELADO">CANCELADO</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Día</label>
+                            <input type="number" id="pedDia" min="1" max="31" value="25" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Mes / Año</label>
+                            <div style="display:flex; gap:0.5rem;">
+                                <input type="number" id="pedMes" min="1" max="12" value="11" style="width:45%;" required>
+                                <input type="number" id="pedAnio" min="2000" max="2030" value="2026" style="width:55%;" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn">Guardar Pedido en BD</button>
+                        <button type="button" class="btn-outline" onclick="llenarEjemploPedido()">Llenar pedido de prueba</button>
+                    </div>
+                </form>
+
+                <!-- Resultado y consulta SELECT para pgAdmin -->
+                <div id="resultadoBox" class="result-box"></div>
+            </div>
+
+            <!-- Panel derecho: Verificación en pgAdmin y últimos registros -->
+            <div class="panel-card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="margin:0; font-size:1.2rem;">Últimos clientes en PostgreSQL</h3>
+                    <button type="button" class="btn-outline" style="padding:0.4rem 0.8rem; font-size:0.8rem;" onclick="cargarClientes()">Actualizar</button>
+                </div>
+                <p style="font-size:0.85rem; color:var(--gray-dark); margin:0.5rem 0 0.8rem 0;">
+                    Después de registrar un dato, ejecuta este <code>SELECT</code> en <strong>pgAdmin</strong> para comprobar que se guardó en <code>ventas_industriales</code>:
+                </p>
+                <div class="sql-box" id="sqlSugerido">SELECT * FROM cliente ORDER BY numerocliente DESC LIMIT 5;</div>
+
+                <table class="table-mini">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Razón Social</th>
+                            <th>Correo</th>
+                            <th>Tipo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaClientesBody">
+                        <tr>
+                            <td colspan="4" style="color:#777; text-align:center;">Conecta la API para ver los registros...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <h2 class="section-title" id="modulos">Módulos del Sistema</h2>
+    <section class="modules">
+        <div class="card" id="productos">
+            <h3>Líneas de Producto</h3>
+            <p>Catálogo de aceites industriales con claves únicas y validación de costos de producción frente a precios unitarios de venta en USD.</p>
+            <div class="tag-container">
+                <span class="tag">HYVOLT</span>
+                <span class="tag">OMNIGOLD</span>
+                <span class="tag">HYPRENE</span>
+            </div>
+        </div>
+
+        <div class="card" id="clientes">
+            <h3>Cartera de Clientes B2B</h3>
+            <p>Clasificación de clientes nacionales y de exportación con validación de dominios de correo, teléfono, RFC y red de sucursales.</p>
+            <div class="tag-container">
+                <span class="tag">Nacionales (RFC)</span>
+                <span class="tag">Exportación</span>
+                <span class="tag">Sucursales</span>
+            </div>
+        </div>
+
+        <div class="card" id="operaciones">
+            <h3>Gestión de Ventas</h3>
+            <p>Registro transaccional de pedidos y detalles de venta con restricciones de integridad sobre fechas, cantidades y precios aplicados.</p>
+            <div class="tag-container">
+                <span class="tag">Registrado</span>
+                <span class="tag">En Proceso</span>
+                <span class="tag">Enviado</span>
+                <span class="tag">Entregado</span>
+            </div>
+        </div>
+
+        <div class="card" id="logistica">
+            <h3>Logística y Transporte</h3>
+            <p>Control de envíos con llave foránea compuesta hacia pedido y cliente, transportistas nacionales/internacionales y costos de flete.</p>
+            <div class="tag-container">
+                <span class="tag">Transporte Nacional</span>
+                <span class="tag">Agencias Aduanales</span>
+                <span class="tag">Guías de Rastreo</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="db-queries" id="reportes">
+        <h2>Reglas e Integridad en Base de Datos</h2>
+        <div class="query-grid">
+            <div class="query-card">
+                <h4>Dominios y Restricciones CHECK</h4>
+                <p>Validación directa en PostgreSQL 17 para correos electrónicos, teléfonos de contacto, formato de RFC y precios mayores o iguales al costo.</p>
+            </div>
+            <div class="query-card">
+                <h4>Integridad Referencial Compuesta</h4>
+                <p>La tabla de envíos valida mediante una clave foránea compuesta <code>(folio, numeroCliente)</code> que el envío corresponda al cliente titular del pedido.</p>
+            </div>
+            <div class="query-card">
+                <h4>Roles y Seguridad en Backend</h4>
+                <p>Separación de privilegios entre <code>usuario_app</code>, <code>usuario_consulta</code> y <code>usuario_admin</code>, manteniendo las credenciales ocultas en el servidor.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer" id="contacto">
+        <div class="footer-contacts">
+            Contacto comercial: ventas@orbon-industrial.mx &nbsp;|&nbsp; Atención logística: +52 (55) 4000-1900 &nbsp;|&nbsp; Zona Industrial, México
+        </div>
+        <p style="margin:0;">&copy; 2026 ORBON - Sector Industrial de Especialidades Petroleras.</p>
+        <div class="academic-note">
+            Nota: Este sitio y la empresa ORBON son ficticios y fueron elaborados únicamente con fines académicos para la Unidad de Aprendizaje de Bases de Datos (ESCOM - IPN).
+        </div>
+    </footer>
+
+    <script>
+        const HEADERS_API = {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true"
+        };
+
+        // Recuperar URL guardada si existe
+        const savedUrl = localStorage.getItem("orbon_api_url");
+        if (savedUrl) {
+            document.getElementById("apiUrl").value = savedUrl;
+        }
+
+        function obtenerBaseUrl() {
+            const url = document.getElementById("apiUrl").value.trim().replace(/\/+$/, "");
+            localStorage.setItem("orbon_api_url", url);
+            return url;
+        }
+
+        function cambiarTab(tab) {
+            const esCliente = tab === "cliente";
+            document.getElementById("formCliente").style.display = esCliente ? "block" : "none";
+            document.getElementById("formPedido").style.display = esCliente ? "none" : "block";
+            document.getElementById("tabClienteBtn").classList.toggle("active", esCliente);
+            document.getElementById("tabPedidoBtn").classList.toggle("active", !esCliente);
+            document.getElementById("resultadoBox").className = "result-box";
+        }
+
+        function actualizarSubtipoCliente() {
+            const tipo = document.getElementById("cliTipo").value;
+            const nac = document.querySelectorAll(".campo-nacional");
+            const exp = document.querySelectorAll(".campo-exportacion");
+            nac.forEach(el => el.style.display = tipo === "NACIONAL" ? "flex" : "none");
+            exp.forEach(el => el.style.display = tipo === "EXPORTACION" ? "flex" : "none");
+        }
+
+        function llenarEjemploCliente() {
+            const num = Math.floor(900 + Math.random() * 90);
+            document.getElementById("cliNumero").value = num;
+            document.getElementById("cliTipo").value = "NACIONAL";
+            actualizarSubtipoCliente();
+            document.getElementById("cliRazon").value = "Lubricantes del Bajío S.A. de C.V. #" + num;
+            document.getElementById("cliCorreo").value = "contacto" + num + "@lubbajio.mx";
+            document.getElementById("cliTelefono").value = "+52 55 4321 8" + num;
+            document.getElementById("cliRfc").value = "LBA210514" + num;
+            document.getElementById("cliEstado").value = "Querétaro";
+            document.getElementById("cliRegimen").value = "General de Ley Personas Morales";
+        }
+
+        function llenarEjemploPedido() {
+            const folio = Math.floor(1500 + Math.random() * 400);
+            document.getElementById("pedFolio").value = folio;
+            document.getElementById("pedCliente").value = document.getElementById("cliNumero").value || 1;
+            document.getElementById("pedEstatus").value = "REGISTRADO";
+            document.getElementById("pedDia").value = 25;
+            document.getElementById("pedMes").value = 11;
+            document.getElementById("pedAnio").value = 2026;
+        }
+
+        async function probarConexion() {
+            const badge = document.getElementById("apiStatus");
+            badge.textContent = "Conectando...";
+            badge.className = "status-badge";
+            try {
+                const res = await fetch(obtenerBaseUrl() + "/salud", { headers: HEADERS_API });
+                const data = await res.json();
+                if (data.ok) {
+                    badge.textContent = "Conectado (" + data.clientes + " clientes)";
+                    badge.className = "status-badge status-ok";
+                    cargarClientes();
+                } else {
+                    throw new Error(data.error || "Error en BD");
+                }
+            } catch (err) {
+                badge.textContent = "Sin conexión a la API";
+                badge.className = "status-badge status-err";
+            }
+        }
+
+        async function cargarClientes() {
+            const tbody = document.getElementById("tablaClientesBody");
+            try {
+                const res = await fetch(obtenerBaseUrl() + "/clientes", { headers: HEADERS_API });
+                const lista = await res.json();
+                if (!Array.isArray(lista)) return;
+                tbody.innerHTML = lista.slice(0, 6).map(c => `
+                    <tr>
+                        <td><strong>${c.numeroCliente}</strong></td>
+                        <td>${c.razonSocial}</td>
+                        <td>${c.correoCliente || ""}</td>
+                        <td>${c.tipoCliente}</td>
+                    </tr>
+                `).join("");
+            } catch (e) {
+                tbody.innerHTML = `<tr><td colspan="4" style="color:#C82333;">No se pudo cargar la lista. Verifica que iniciar.ps1 esté corriendo.</td></tr>`;
+            }
+        }
+
+        async function enviarCliente(e) {
+            e.preventDefault();
+            const box = document.getElementById("resultadoBox");
+            const payload = {
+                numeroCliente: Number(document.getElementById("cliNumero").value),
+                tipoCliente: document.getElementById("cliTipo").value,
+                razonSocial: document.getElementById("cliRazon").value,
+                correoCliente: document.getElementById("cliCorreo").value,
+                telefonoCliente: document.getElementById("cliTelefono").value,
+                RFC: document.getElementById("cliRfc").value || null,
+                estadoOrigen: document.getElementById("cliEstado").value || null,
+                regimenFiscal: document.getElementById("cliRegimen").value || null,
+                idFiscalGlobal: document.getElementById("cliIdFiscal").value || null,
+                paisReceptor: document.getElementById("cliPais").value || null
+            };
+
+            try {
+                const res = await fetch(obtenerBaseUrl() + "/clientes", {
+                    method: "POST",
+                    headers: HEADERS_API,
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (res.ok && data.ok) {
+                    const sql = `SELECT * FROM cliente WHERE numerocliente = ${data.numeroCliente};`;
+                    document.getElementById("sqlSugerido").textContent = sql;
+                    box.className = "result-box result-ok";
+                    box.innerHTML = `
+                        <strong>&check; Guardado en PostgreSQL:</strong> Cliente <strong>#${data.numeroCliente}</strong> (${data.razonSocial}).<br>
+                        Copia la consulta de la derecha en <strong>pgAdmin</strong> para verificar la fila.
+                    `;
+                    cargarClientes();
+                } else {
+                    box.className = "result-box result-err";
+                    box.innerHTML = `<strong>&times; Rechazado por PostgreSQL:</strong><br>${data.error || "Datos inválidos"}`;
+                }
+            } catch (err) {
+                box.className = "result-box result-err";
+                box.innerHTML = `<strong>&times; Error de red:</strong> No se pudo contactar la API en <code>${obtenerBaseUrl()}</code>.`;
+            }
+        }
+
+        async function enviarPedido(e) {
+            e.preventDefault();
+            const box = document.getElementById("resultadoBox");
+            const payload = {
+                folio: Number(document.getElementById("pedFolio").value),
+                numeroCliente: Number(document.getElementById("pedCliente").value),
+                estatus: document.getElementById("pedEstatus").value,
+                dia: Number(document.getElementById("pedDia").value),
+                mes: Number(document.getElementById("pedMes").value),
+                anio: Number(document.getElementById("pedAnio").value)
+            };
+
+            try {
+                const res = await fetch(obtenerBaseUrl() + "/pedidos", {
+                    method: "POST",
+                    headers: HEADERS_API,
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (res.ok && data.ok) {
+                    const sql = `SELECT * FROM pedido WHERE folio = ${data.folio};`;
+                    document.getElementById("sqlSugerido").textContent = sql;
+                    box.className = "result-box result-ok";
+                    box.innerHTML = `
+                        <strong>&check; Guardado en PostgreSQL:</strong> Pedido <strong>Folio #${data.folio}</strong> para el cliente #${data.numeroCliente} (${data.estatus}).<br>
+                        Copia la consulta de la derecha en <strong>pgAdmin</strong> para verificar la fila.
+                    `;
+                } else {
+                    box.className = "result-box result-err";
+                    box.innerHTML = `<strong>&times; Rechazado por PostgreSQL:</strong><br>${data.error || "Datos inválidos"}`;
+                }
+            } catch (err) {
+                box.className = "result-box result-err";
+                box.innerHTML = `<strong>&times; Error de red:</strong> No se pudo contactar la API en <code>${obtenerBaseUrl()}</code>.`;
+            }
+        }
+    </script>
+</body>
+</html>

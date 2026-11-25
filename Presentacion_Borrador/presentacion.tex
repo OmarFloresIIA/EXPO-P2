@@ -1,0 +1,445 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+
+% Idioma y codificación
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{lmodern}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, fit}
+
+% --- Paleta de colores: verdes y azules claros (estilo PowerPoint limpio) ---
+\definecolor{AzulClaro}{HTML}{2B8CBE}
+\definecolor{AzulSuave}{HTML}{E6F4FA}
+\definecolor{VerdeClaro}{HTML}{2E9E76}
+\definecolor{VerdeSuave}{HTML}{E6F7F0}
+\definecolor{VerdeMenta}{HTML}{52B788}
+\definecolor{TextoOscuro}{HTML}{1E293B}
+\definecolor{GrisSuave}{HTML}{64748B}
+\definecolor{FondoBlanco}{HTML}{FAFDFF}
+
+% --- Configuración general de Beamer ---
+\usetheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{background canvas}{bg=FondoBlanco}
+\setbeamercolor{normal text}{fg=TextoOscuro}
+\setbeamercolor{structure}{fg=AzulClaro}
+\setbeamercolor{frametitle}{fg=white, bg=AzulClaro}
+\setbeamercolor{title}{fg=TextoOscuro}
+\setbeamercolor{subtitle}{fg=VerdeClaro}
+\setbeamercolor{itemize item}{fg=VerdeClaro}
+\setbeamercolor{itemize subitem}{fg=AzulClaro}
+
+\setbeamercolor{block title}{bg=AzulClaro, fg=white}
+\setbeamercolor{block body}{bg=AzulSuave, fg=TextoOscuro}
+\setbeamercolor{block title example}{bg=VerdeClaro, fg=white}
+\setbeamercolor{block body example}{bg=VerdeSuave, fg=TextoOscuro}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{itemize items}[circle]
+
+\setbeamercolor{barraverde}{bg=VerdeMenta, fg=VerdeMenta}
+
+% Encabezado de cada diapositiva
+\setbeamertemplate{frametitle}{
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth,ht=1.0cm,dp=0.3cm,leftskip=0.5cm,rightskip=0.5cm]{frametitle}
+    \usebeamerfont{frametitle}\insertframetitle
+  \end{beamercolorbox}
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.5pt,dp=0pt]{barraverde}
+  \end{beamercolorbox}
+}
+
+% Pie de página discreto
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.75\paperwidth,ht=0.45cm,dp=0.2cm]{normal text}
+      \hspace{0.5cm}\tiny\color{GrisSuave} ESCOM -- IPN \quad|\quad Bases de Datos (3BV1) \quad|\quad Proyecto Segundo Parcial
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.25\paperwidth,ht=0.45cm,dp=0.2cm]{normal text}
+      \hfill\tiny\color{AzulClaro}\textbf{\insertframenumber{} / \inserttotalframenumber}\hspace{0.5cm}
+    \end{beamercolorbox}%
+  }
+}
+
+% Estilos TikZ globales (evita conflictos de #1 dentro de frames de Beamer)
+\tikzset{
+  cajaAgenda/.style={rectangle, rounded corners=8pt, minimum width=4.0cm, minimum height=3.8cm, align=center, text width=3.6cm, draw=#1, line width=1.2pt, fill=#1!10},
+  boxArq/.style={rectangle, rounded corners=7pt, draw=#1, line width=1.2pt, fill=#1!12, minimum width=2.45cm, minimum height=1.65cm, align=center, font=\footnotesize},
+  flechaArq/.style={-{Stealth[length=2.4mm]}, very thick, color=TextoOscuro},
+  tblRel/.style={rectangle, rounded corners=4pt, draw=VerdeClaro, fill=white, font=\footnotesize\bfseries, minimum width=1.9cm, minimum height=0.52cm},
+  arrRel/.style={-{Stealth[length=2mm]}, thick, color=AzulClaro}
+}
+
+% Portada limpia
+\title{\textbf{Proyecto del Segundo Parcial}}
+\subtitle{Bases de Datos -- Ingeniería en Sistemas Computacionales}
+\author{Brenda Roa Venegas \and Omar Flores Olivares}
+\institute{Instituto Politécnico Nacional -- ESCOM \\ Grupo: 3BV1}
+\date{Noviembre 2026}
+
+\begin{document}
+
+% ============================================================
+% DIAPOSITIVA 1: PORTADA
+% ============================================================
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    % Franja decorativa izquierda verde-azul
+    \fill[AzulClaro] (current page.north west) rectangle ([xshift=0.55cm]current page.south west);
+    \fill[VerdeMenta] ([xshift=0.55cm]current page.north west) rectangle ([xshift=0.75cm]current page.south west);
+    % Detalle decorativo esquina inferior derecha
+    \fill[AzulSuave] ([xshift=-4.5cm,yshift=1.8cm]current page.south east) rectangle (current page.south east);
+    \fill[VerdeSuave] ([xshift=-2.8cm,yshift=0.9cm]current page.south east) rectangle (current page.south east);
+  \end{tikzpicture}
+
+  \vspace{1.2cm}
+  \hspace{0.8cm}
+  \begin{minipage}{0.88\textwidth}
+    {\small\color{VerdeClaro}\textbf{INSTITUTO POLITÉCNICO NACIONAL -- ESCOM}}\\[0.3cm]
+    {\Huge\color{AzulClaro}\textbf{Proyecto del Segundo Parcial}}\\[0.25cm]
+    {\Large\color{TextoOscuro} Unidad de Aprendizaje: Bases de Datos}\\[0.8cm]
+    {\color{VerdeMenta}\rule{6cm}{2pt}}\\[0.6cm]
+    \textbf{Integrantes:} Brenda Roa Venegas y Omar Flores Olivares\\[0.2cm]
+    \textbf{Grupo:} 3BV1 \qquad \textbf{Gestor:} PostgreSQL 17 (Docker)\\[0.2cm]
+    \textbf{Proyecto asignado:} Obras Públicas (IJCOPI)
+  \end{minipage}
+\end{frame}
+
+% ============================================================
+% DIAPOSITIVA 2: AGENDA Y TIEMPOS (13 MIN)
+% ============================================================
+\begin{frame}{Estructura de la exposición (13 minutos)}
+  \vspace{0.3cm}
+  \begin{center}
+    \begin{tikzpicture}
+      \node[cajaAgenda=AzulClaro] (p1) at (0,0) {
+        {\large\color{AzulClaro}\textbf{1. Proyecto\\propio}}\\[0.2cm]
+        {\Large\textbf{6 min}}\\[0.25cm]
+        \small Conexión Web--BD,\\
+        registro en vivo,\\
+        esquema y práctica 6--8
+      };
+
+      \node[cajaAgenda=VerdeClaro] (p2) at (4.5,0) {
+        {\large\color{VerdeClaro}\textbf{2. Proyecto\\asignado}}\\[0.2cm]
+        {\Large\textbf{5 min}}\\[0.25cm]
+        \small Sistema montado,\\
+        incidencia resuelta,\\
+        3 consultas (AR y SQL)
+      };
+
+      \node[cajaAgenda=AzulClaro] (p3) at (9.0,0) {
+        {\large\color{AzulClaro}\textbf{3. Artículo\\y mejoras}}\\[0.2cm]
+        {\Large\textbf{2 min}}\\[0.25cm]
+        \small Resumen del manuscrito\\
+        y 2 propuestas\\
+        de mejora
+      };
+    \end{tikzpicture}
+  \end{center}
+  \vspace{0.3cm}
+  \centering\small\color{GrisSuave}
+  Todo el material y los enlaces estarán al inicio del \texttt{README.md} del repositorio.
+\end{frame}
+
+% ============================================================
+% DIAPOSITIVA 3: PROYECTO PROPIO - CONTEXTO Y ESQUEMA
+% ============================================================
+\begin{frame}{1. Proyecto propio: Ventas Industriales}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \begin{column}{0.45\textwidth}
+      \begin{block}{Resumen}
+        \begin{itemize}
+          \item Ventas y envíos de 3 líneas: \textbf{OMNIGOLD}, \textbf{HYVOLT} y \textbf{HYPRENE}.
+          \item \textbf{PostgreSQL 17} en Docker (\texttt{ventas\_industriales}, puerto \texttt{5434}).
+          \item \textbf{7 tablas} y \textbf{2,702 registros} sintéticos cargados con \texttt{COPY}.
+        \end{itemize}
+      \end{block}
+    \end{column}
+
+    \begin{column}{0.51\textwidth}
+      \begin{exampleblock}{Tablas principales (Modelo Relacional)}
+        \centering
+        \vspace{0.15cm}
+        \begin{tikzpicture}[scale=0.92, transform shape]
+          \node[tblRel] (cli) at (0,1.6) {cliente};
+          \node[tblRel] (suc) at (2.5,1.6) {sucursal};
+          \node[tblRel] (ped) at (0,0.4) {pedido};
+          \node[tblRel] (det) at (0,-0.8) {detalle};
+          \node[tblRel] (pro) at (2.5,-0.8) {producto};
+          \node[tblRel] (env) at (2.5,0.4) {envio};
+          \node[tblRel] (tra) at (4.9,0.4) {transportista};
+
+          \draw[arrRel] (suc) -- (cli);
+          \draw[arrRel] (ped) -- (cli);
+          \draw[arrRel] (det) -- (ped);
+          \draw[arrRel] (det) -- (pro);
+          \draw[arrRel] (env) -- (ped);
+          \draw[arrRel] (env) -- (suc);
+          \draw[arrRel] (env) -- (tra);
+        \end{tikzpicture}
+        \vspace{0.1cm}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ============================================================
+% DIAPOSITIVA 4: CONEXIÓN WEB -> NGROK -> API -> BD LOCAL (FOCO)
+% ============================================================
+\begin{frame}{Conexión entre la página web y la BD local}
+  \vspace{0.1cm}
+  \begin{center}
+    \begin{tikzpicture}
+      \node[boxArq=AzulClaro] (web) at (0,0) {\textbf{Página Web}\\(GitHub Pages)\\\tiny Formulario HTML/JS};
+      \node[boxArq=VerdeMenta] (ng) at (3.75,0) {\textbf{Túnel ngrok}\\(HTTPS público)\\\tiny Puente a la laptop};
+      \node[boxArq=AzulClaro] (api) at (7.5,0) {\textbf{API Local}\\(Python / Backend)\\\tiny Lee \texttt{.env} y valida};
+      \node[boxArq=VerdeClaro] (db) at (11.25,0) {\textbf{PostgreSQL 17}\\(Docker local)\\\tiny \texttt{localhost:5434}};
+
+      \draw[flechaArq] (web) -- node[above, font=\tiny]{\texttt{POST}} (ng);
+      \draw[flechaArq] (ng) -- node[above, font=\tiny]{Redirige} (api);
+      \draw[flechaArq] (api) -- node[above, font=\tiny]{\texttt{INSERT}} (db);
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.35cm}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{¿Por qué esta arquitectura?}
+        \begin{itemize}
+          \item GitHub Pages es estático: necesita un backend accesible por HTTPS.
+          \item \textbf{ngrok} expone nuestra API local de forma rápida y segura para la demo.
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Seguridad de credenciales}
+        \begin{itemize}
+          \item El navegador \textbf{nunca} ve usuarios ni contraseñas de PostgreSQL.
+          \item La API usa \texttt{usuario\_app} y lee la clave desde el archivo \texttt{.env} local.
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ============================================================
+% DIAPOSITIVA 5: PRUEBA DE REGISTRO EN VIVO
+% ============================================================
+\begin{frame}{Prueba de registro en vivo y verificación}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \begin{column}{0.52\textwidth}
+      \textbf{\color{AzulClaro} Flujo de la demostración:}
+      \vspace{0.2cm}
+      \begin{enumerate}
+        \item \textbf{Capturar:} Llenamos el formulario en la página web publicada.
+        \item \textbf{Enviar:} La web manda el \texttt{POST} a la API vía \texttt{ngrok}.
+        \item \textbf{Guardar:} La API ejecuta el \texttt{INSERT} en PostgreSQL.
+        \item \textbf{Verificar:} Consultamos en \texttt{psql} por clave para comprobar los datos.
+      \end{enumerate}
+
+      \vspace{0.1cm}
+      \begin{exampleblock}{Consulta de verificación en \texttt{psql}}
+        \scriptsize\texttt{SELECT * FROM cliente WHERE numerocliente = 999;}
+      \end{exampleblock}
+    \end{column}
+
+    \begin{column}{0.44\textwidth}
+      \begin{tikzpicture}
+        \node[rectangle, rounded corners=8pt, draw=AzulClaro, dashed, line width=1pt, fill=AzulSuave, minimum width=5.4cm, minimum height=3.8cm, align=center] {
+          \color{AzulClaro}\textbf{[Espacio para captura]}\\[0.2cm]
+          \footnotesize\color{GrisSuave}
+          Formulario enviado +\\
+          fila guardada en \texttt{psql}\\[0.2cm]
+          \tiny (También sirve como respaldo\\
+          si falla la red del laboratorio)
+        };
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ============================================================
+% DIAPOSITIVA 6: INTEGRIDAD, PERMISOS Y SCRIPTS
+% ============================================================
+\begin{frame}{Reglas de integridad, permisos y scripts}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Dominio e Integridad Referencial}
+        \begin{itemize}
+          \item \textbf{Dominios:} \texttt{correo\_electronico} y \texttt{telefono\_contacto}.
+          \item \textbf{Reglas \texttt{CHECK}:} formato de RFC, CP, fechas válidas y \texttt{precio >= costo}.
+          \item \textbf{FK compuesta:} \texttt{envio(folio, numerocliente)} garantiza que el envío coincida con el cliente del pedido (\texttt{RESTRICT} / \texttt{CASCADE}).
+        \end{itemize}
+      \end{block}
+    \end{column}
+
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Permisos y ubicación de scripts}
+        \begin{itemize}
+          \item \textbf{Roles:} \texttt{usuario\_app} (CRUD), \texttt{usuario\_consulta} (lectura), \texttt{usuario\_admin}.
+          \item \textbf{Creación:} \texttt{esquema.sql}
+          \item \textbf{Migraciones:} \texttt{001-dominios.sql}, \texttt{002-referencias.sql}
+          \item \textbf{Carga:} \texttt{practica4/poblar/poblar.py} (en transacción)
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ============================================================
+% DIAPOSITIVA 7: PRÁCTICA INTEGRADA 6, 7 Y 8 (PENDIENTE)
+% ============================================================
+\begin{frame}{Práctica integrada 6, 7 y 8 \small\color{VerdeSuave}(Borrador por completar)}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Normalización (3FN y FNBC)}
+        \begin{itemize}
+          \item \textbf{Tabla analizada:} \textit{[Colocar tabla]}
+          \item \textbf{Dependencias funcionales:} \textit{[Ej. $A \to B$]}
+          \item \textbf{Clave candidata:} \textit{[Colocar clave]}
+          \item \textbf{Resultado:} Paso a 3FN y comprobación de FNBC (\texttt{normalizacion.md}).
+        \end{itemize}
+      \end{block}
+    \end{column}
+
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Consulta en RelaX vs SQL}
+        \begin{itemize}
+          \item \textbf{Pregunta:} \textit{[Colocar consulta representativa]}
+          \item \textbf{RelaX:} \textit{[Expresión en álgebra relacional]}
+          \item \textbf{SQL:} \textit{[Equivalente en PostgreSQL]}
+          \item \textbf{Comparación:} Mismas filas en ambos (\texttt{algebra.md}).
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ============================================================
+% DIAPOSITIVA 8: PROYECTO ASIGNADO - MONTAJE
+% ============================================================
+\begin{frame}{2. Proyecto asignado: Obras Públicas (IJCOPI)}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{¿Qué hace el sistema?}
+        \begin{itemize}
+          \item Mapa y consultas de obras públicas con financiamiento federal en México (2020--2025).
+          \item Combina datos oficiales de \textbf{SHCP}, \textbf{INEGI} y \textbf{CONEVAL}.
+          \item Usa capas \textbf{Bronce $\to$ Plata (Iceberg) $\to$ Oro (Parquet)} + \textbf{PostgreSQL} (\texttt{warehouse.*}).
+        \end{itemize}
+      \end{block}
+    \end{column}
+
+    \begin{column}{0.44\textwidth}
+      \begin{exampleblock}{Incidencia del montaje}
+        \begin{itemize}
+          \item \textbf{Entorno:} Fork publicado en GitHub Pages + BD/lago local.
+          \item \textbf{Problema encontrado:} \textit{[Anotar error real al levantar Docker / ETL]}
+          \item \textbf{Solución:} \textit{[Cómo se resolvió o qué se intentó]}
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ============================================================
+% DIAPOSITIVA 9: PROYECTO ASIGNADO - 3 CONSULTAS
+% ============================================================
+\begin{frame}{Consultas en Álgebra Relacional y SQL (Proyecto asignado)}
+  \vspace{0.15cm}
+  \footnotesize
+  \begin{tabular}{p{2.2cm} p{3.3cm} p{3.8cm} p{2.7cm}}
+    \toprule
+    \textbf{\color{AzulClaro}Consulta} & \textbf{\color{AzulClaro}Pregunta} & \textbf{\color{AzulClaro}Álgebra Relacional} & \textbf{\color{AzulClaro}Operador principal} \\
+    \midrule
+    \textbf{1.} \texttt{01\_totales} & \textit{[Ej. Proyectos por ciclo]} & $\pi_{\dots}(\sigma_{\dots}(R))$ & Selección ($\sigma$) / Proyección ($\pi$) \\[0.35cm]
+    \textbf{2.} \texttt{03\_edomex} & \textit{[Ej. Municipios EdoMex 2024]} & $\pi_{\dots}(\sigma_{\dots}(R \bowtie S))$ & Reunión ($\bowtie$) \\[0.35cm]
+    \textbf{3.} \texttt{04\_rezago} & \textit{[Ej. Gasto por rezago social]} & $\gamma_{\dots}(R \bowtie S)$ & Reunión ($\bowtie$) + Agrupación \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.5cm}
+  \begin{exampleblock}{Demostración en vivo}
+    Ejecutaremos el SQL equivalente sobre nuestra base montada, mostraremos el árbol de operadores de cada una y el resultado en \textbf{RelaX} cuando aplique.
+  \end{exampleblock}
+\end{frame}
+
+% ============================================================
+% DIAPOSITIVA 10: ARTÍCULO - RESUMEN
+% ============================================================
+\begin{frame}{3. Artículo del proyecto asignado}
+  \textbf{\color{AzulClaro}\small Federally Funded Public Works in Mexico: a Measured Lakehouse Layer (IJCOPI)}
+  \vspace{0.25cm}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Problema, datos y método}
+        \begin{itemize}
+          \item \textbf{Problema:} Analizar el gasto federal en obras públicas con datos trazables.
+          \item \textbf{Datos:} 9 archivos oficiales (SHCP, INEGI, CONEVAL) verificados por SHA-256.
+          \item \textbf{Método:} Lakehouse (SeaweedFS + Iceberg + DuckDB) + PostgreSQL y criterios C1--C4.
+        \end{itemize}
+      \end{block}
+    \end{column}
+
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Resultado y avance vs Parcial 1}
+        \begin{itemize}
+          \item \textbf{Parcial 1:} Almacén con datos \textbf{sintéticos} a nivel municipal.
+          \item \textbf{Ahora:} Más de 2 millones de reportes oficiales y \textbf{253,346 obras} en el mapa nacional 2024.
+          \item Consultas verificadas entre PostgreSQL y el lago.
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ============================================================
+% DIAPOSITIVA 11: DOS PROPUESTAS DE MEJORA
+% ============================================================
+\begin{frame}{Dos propuestas de mejora}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Mejora 1: Polígonos municipales reales}
+        \begin{itemize}
+          \item \textbf{Limitación:} Los municipios se ubican solo en su cabecera (sin polígonos), lo que omite puntos en filtros estatales.
+          \item \textbf{Cambio:} Integrar límites municipales oficiales del INEGI en la capa Plata.
+          \item \textbf{Cómo comprobar:} Comparar conteo de proyectos por estado antes y después.
+        \end{itemize}
+      \end{block}
+    \end{column}
+
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Mejora 2: Validación de alertas C1--C4}
+        \begin{itemize}
+          \item \textbf{Limitación:} C1--C4 generan listas de revisión sin casos etiquetados para medir precisión.
+          \item \textbf{Cambio:} Cruzar una muestra con auditorías públicas (ASF) como referencia.
+          \item \textbf{Cómo comprobar:} Medir cuántos proyectos marcados coinciden con observaciones reales.
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ============================================================
+% DIAPOSITIVA 12: CIERRE
+% ============================================================
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[AzulClaro] (current page.north west) rectangle ([yshift=-0.45cm]current page.north east);
+    \fill[VerdeMenta] (current page.south west) rectangle ([yshift=0.45cm]current page.south east);
+  \end{tikzpicture}
+
+  \vspace{2.2cm}
+  \centering
+  {\Huge\color{AzulClaro}\textbf{¡Gracias por su atención!}}\\[0.5cm]
+  {\large\color{TextoOscuro} ¿Alguna pregunta?}\\[0.9cm]
+  \small\color{GrisSuave}
+  Brenda Roa Venegas \quad $\cdot$ \quad Omar Flores Olivares \quad $\cdot$ \quad 3BV1 -- ESCOM IPN
+\end{frame}
+
+\end{document}
